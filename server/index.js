@@ -37,9 +37,14 @@ app.get('*', (req, res) => {
   res.redirect('/');
 });
 
-app.use(function(error, req, res, next) {
-  res.json({ message: error.message });
-});
+app.use((err, req, res, next) => {
+  // if (err.isServer) {
+    // log the error...
+    // probably you don't want to log unauthorized access
+    // or do you?
+  // }
+  return res.status(err.output.statusCode).json(err.output.payload);
+})
 
 const port = process.env.PORT || 3000;
 
