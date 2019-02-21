@@ -1,10 +1,27 @@
 const mongoose = require('mongoose');
 
 const PollSchema = new mongoose.Schema({
-  creator: {
+  name: {
+    type: String,
+    required: true,
+    minlength: 1,
+  },
+  creator_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
+  },
+  creator: {
+    type: String,
+    required: true,
+  },
+  created_on: {
+    type: Date,
+    default: Date.now()
+  },
+  updated_on: {
+    type: Date,
+    default: Date.now(),
   },
   options: [{
     type: String,

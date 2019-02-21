@@ -3,12 +3,16 @@ const asyncMiddleware = require('../../errorHandler/asyncMiddleware');
 const Joi = require('joi');
 const boom = require('boom');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const queries = require('../../models/queries');
 
 const registerUserSchema = require('../../validation/registerUserValidation');
+const loginUserSchema = require('../../validation/loginUserValidation');
 
 const router = express.Router();
+
+// POST + Register a new User
 
 router.post('/register', asyncMiddleware(async (req, res) => {
   const { error, value } = Joi.validate(req.body, registerUserSchema);
@@ -36,8 +40,35 @@ router.post('/register', asyncMiddleware(async (req, res) => {
 
 }));
 
-router.post('/login', asyncMiddleware((req, res) => {
-  
+// POST - Login a user
+
+router.post('/login', asyncMiddleware(async (req, res) => {
+  const { error, value } = Joi.validate(req.body, loginUserSchema);
+
+  if (error) throw boom.badRequest(error.details[0].message);
+
+  const user = await queries.findUserByEmail(value.email);
+  if (!user) throw boom.badRequest("something wrong with request");
+
+  const pwdIsValid = await bcrypt.compare(value.password, user.password);
+  console.log(pwdIsValid);
+  if (!pwdIsValid) throw boom.badRequest('something wrong with request');
+
+  const payload = {
+    username: user.username,
+    email: user.email,
+    id: user._id
+  };
+
+  console.log(payload);
+
+  jwt.sign(payload, process.env.SECRET_FOR_TOKEN, {
+    expiresIn: 86400 // one day
+  }, (err, token) => {
+    if (err) throw boom.badImplementation('Unable to generate token');
+    return res.status(200).json({ auth: true, token: "Bearer " + token });
+  });
+
 }));
 
 module.exports = router;
