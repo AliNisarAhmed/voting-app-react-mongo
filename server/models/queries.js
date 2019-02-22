@@ -21,10 +21,16 @@ function createPoll (pollObj) {
   return Poll.create(pollObj);
 }
 
+function findByUserNameAndDelete (username) {
+  return User.findOneAndDelete({username}).exec();
+}
+
 module.exports = {
   findUserByUsername,
   findUserByEmail,
   createUser,
   getAllPolls,
   createPoll,
+  findByUserNameAndDelete,
+  
 }

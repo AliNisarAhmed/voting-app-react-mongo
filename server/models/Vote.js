@@ -15,7 +15,7 @@ const VoteSchema = new mongoose.Schema({
   },
   option: {
     type: String
-  }
+  },
 });
 
 const Vote = mongoose.model('vote', VoteSchema);

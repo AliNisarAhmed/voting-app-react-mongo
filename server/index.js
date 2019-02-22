@@ -20,7 +20,7 @@ app.use('/', express.static('dist'));
 // POST -   /api/auth/login 
 // POST -   /api/auth/register
 // GET -    /api/polls - All Polls
-// POST -   /api/polls/:userId/new - Create a Poll (If Logged in)
+// POST -   /api/polls/new - Create a Poll (If Logged in)
 // GET -    /api/polls/:pollId - view details of a poll (secured)
 // POST -   /api/polls/:pollId - register a vote on a poll (once per user or IP)
 // PUT -    /api/polls/:pollId - Add an option on a poll (will not be included)
@@ -58,4 +58,6 @@ const port = process.env.PORT || 3000;
 connect('mongodb://localhost:27017/test-db-delete')
   .then(() => {
     app.listen(port, () => console.log(`> Listening on port ${port}!`));
-  })
+  });
+
+module.exports = app;

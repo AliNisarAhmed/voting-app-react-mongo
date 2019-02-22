@@ -34,7 +34,7 @@ router.post('/register', asyncMiddleware(async (req, res) => {
    password: hashedPwd,
  });
 
- if (!newUser) throw boom.badImplementation('User could not be created');
+ if (!newUser) throw boom.badImplementation('user could not be created');
 
  return res.status(200).json({ username: newUser.username, email: newUser.email });
 
@@ -51,7 +51,6 @@ router.post('/login', asyncMiddleware(async (req, res) => {
   if (!user) throw boom.badRequest("something wrong with request");
 
   const pwdIsValid = await bcrypt.compare(value.password, user.password);
-  console.log(pwdIsValid);
   if (!pwdIsValid) throw boom.badRequest('something wrong with request');
 
   const payload = {
@@ -60,12 +59,10 @@ router.post('/login', asyncMiddleware(async (req, res) => {
     id: user._id
   };
 
-  console.log(payload);
-
   jwt.sign(payload, process.env.SECRET_FOR_TOKEN, {
     expiresIn: 86400 // one day
   }, (err, token) => {
-    if (err) throw boom.badImplementation('Unable to generate token');
+    if (err) throw boom.badImplementation('unable to generate token');
     return res.status(200).json({ auth: true, token: "Bearer " + token });
   });
 

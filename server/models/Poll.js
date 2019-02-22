@@ -27,6 +27,10 @@ const PollSchema = new mongoose.Schema({
     type: String,
     required: true,
   }],
+  votes: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Vote'
+  }],
 });
 
 const Poll = mongoose.model('poll', PollSchema);
