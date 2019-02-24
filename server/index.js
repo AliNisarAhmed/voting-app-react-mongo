@@ -21,7 +21,7 @@ app.use('/', express.static('dist'));
 // POST -   /api/auth/register
 // GET -    /api/polls - All Polls
 // POST -   /api/polls/new - Create a Poll (If Logged in)
-// GET -    /api/polls/:pollId - view details of a poll (secured)
+// GET -    /api/polls/:pollId - view details of a poll
 // POST -   /api/polls/:pollId - register a vote on a poll (once per user or IP)
 // PUT -    /api/polls/:pollId - Add an option on a poll (will not be included)
 // DELETE - /api/polls/:pollId - Delete a poll (only if the creator of a poll)
@@ -44,11 +44,12 @@ app.get('*', (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  // if (err.isServer) {
+  if (err.isServer) {
     // log the error...
     // probably you don't want to log unauthorized access
     // or do you?
-  // }
+    console.log(err);
+  }
   return res.status(err.output.statusCode).json(err.output.payload);
 })
 

@@ -8,16 +8,18 @@ const VoteSchema = new mongoose.Schema({
   poll: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Poll',
+    required: true,
   },
   ip: {
     type: String,
     required: true,
   },
   option: {
-    type: String
+    type: String,
+    required: true,
   },
 });
 
-const Vote = mongoose.model('vote', VoteSchema);
+const Vote = mongoose.model('Vote', VoteSchema);
 
 module.exports = Vote;

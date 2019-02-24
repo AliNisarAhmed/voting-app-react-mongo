@@ -1,5 +1,6 @@
 const User = require('./User');
 const Poll = require('./Poll');
+const Vote = require('./Vote');
 
 function findUserByUsername (username) {
   return User.findOne({ username }).exec();
@@ -9,8 +10,16 @@ function findUserByEmail (email) {
   return User.findOne({ email }).exec();
 }
 
+function findUserById (id) {
+  return User.findById(id).exec();
+}
+
 function createUser (userObj) {
   return User.create(userObj);
+}
+
+function findByUserNameAndDelete (username) {
+  return User.findOneAndDelete({username}).exec();
 }
 
 function getAllPolls () {
@@ -21,9 +30,30 @@ function createPoll (pollObj) {
   return Poll.create(pollObj);
 }
 
-function findByUserNameAndDelete (username) {
-  return User.findOneAndDelete({username}).exec();
+function findPollById(pollId) {
+  return Poll.findById(pollId).populate('votes').exec();
 }
+
+function createVote(voteObj) {
+  return Vote.create(voteObj);
+}
+
+function updatePollWithVote(pollId, voteId) {
+  return Poll.findByIdAndUpdate(pollId, {$push: { 'votes': voteId }}, {upsert: true} );
+}
+
+function updateUserWithVote(userId, voteId) {
+  return User.findByIdAndUpdate(userId, {$push: { 'votes': voteId }}, {upsert: true} );
+}
+
+function findVoteByUserId (user, poll) {
+  return Vote.findOne({user, poll}).exec();
+}
+
+function findVoteByIP (ip, poll) {
+  return Vote.findOne({ip, poll}).exec();
+}
+
 
 module.exports = {
   findUserByUsername,
@@ -32,5 +62,11 @@ module.exports = {
   getAllPolls,
   createPoll,
   findByUserNameAndDelete,
-  
+  findPollById,
+  createVote,
+  updatePollWithVote,
+  updateUserWithVote,
+  findUserById,
+  findVoteByUserId,
+  findVoteByIP,
 }
