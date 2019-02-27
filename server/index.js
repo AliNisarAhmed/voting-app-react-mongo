@@ -8,6 +8,7 @@ const connect = require('./connect');
 
 const authRoutes = require('./routes/auth/index');
 const pollRoutes = require('./routes/api/polls');
+const userRoutes = require('./routes/api/users');
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -22,14 +23,18 @@ app.use('/', express.static('dist'));
 // GET -    /api/polls - All Polls
 // POST -   /api/polls/new - Create a Poll (If Logged in)
 // GET -    /api/polls/:pollId - view details of a poll
-// POST -   /api/polls/:pollId - register a vote on a poll (once per user or IP)
-// PUT -    /api/polls/:pollId - Add an option on a poll (will not be included)
+// POST -   /api/polls/:pollId - register a vote on a poll (once per user or IP) - cannot change once voted
 // DELETE - /api/polls/:pollId - Delete a poll (only if the creator of a poll)
+
+// GET -    /api/users/:userId - GET details on a logged in user
 
 app.use('/api/auth', authRoutes);
 
 // polls routes
 app.use('/api/polls', pollRoutes);
+
+// user routes
+app.use('/api/users', userRoutes);
 
 // Sample front end routes
 

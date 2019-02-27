@@ -54,6 +54,14 @@ function findVoteByIP (ip, poll) {
   return Vote.findOne({ip, poll}).exec();
 }
 
+function deletePoll (pollId) {
+  return Poll.findByIdAndRemove(pollId).exec();
+}
+
+function findUserByIdAndPopulate(userId) {
+  return User.findById(userId).populate('polls').populate('votes').exec();
+}
+
 
 module.exports = {
   findUserByUsername,
@@ -69,4 +77,6 @@ module.exports = {
   findUserById,
   findVoteByUserId,
   findVoteByIP,
+  deletePoll,
+  findUserByIdAndPopulate,
 }

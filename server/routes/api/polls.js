@@ -2,6 +2,7 @@ const router = require('express').Router();
 const boom = require('boom');
 const jwt = require('jsonwebtoken');
 const Joi = require('joi');
+const ObjectId = require('mongoose').Types.ObjectId;
 
 const asyncMiddleware = require('../../errorHandler/asyncMiddleware');
 const queries = require('../../models/queries');
@@ -9,7 +10,6 @@ const authMiddleware = require('../auth/authMiddleware');
 const createPollSchema = require('../../validation/createPollValidation');
 const voteSchema = require('../../validation/voteValidation');
 
-const ObjectId = require('mongoose').Types.ObjectId;
 
 // GET - All Polls
 router.get('/', asyncMiddleware(async (req, res) => {
@@ -39,7 +39,7 @@ router.get('/:pollId', asyncMiddleware(async (req, res) => {
   const { pollId } = req.params;
   if (!ObjectId.isValid(pollId)) throw boom.badRequest('Poll does not exist');
   const poll = await queries.findPollById(pollId);
-  if (!poll) throw boom.badRequest('No such Poll exists');
+  if (!poll) throw boom.badRequest('Poll does not exist');
   res.status(200).json(poll);
 }))
 
@@ -47,7 +47,9 @@ router.get('/:pollId', asyncMiddleware(async (req, res) => {
 // POST - casting a vote on a particular poll by a user 
 router.post('/:pollId', asyncMiddleware(async (req, res) => {
   const { pollId } = req.params;
+  console.log(req.params);
   // check if req.body is valid
+  console.log(req.body)
   const { error, value } = Joi.validate(req.body, voteSchema);
   if (error) throw boom.badRequest(error);
 
@@ -80,14 +82,25 @@ router.post('/:pollId', asyncMiddleware(async (req, res) => {
     if (vote) throw boom.badRequest('You have already voted on this poll');
   }
 
-  const vote = await queries.createVote({user: value.userId, poll: poll._id, ip: req.ip, option: value.option });
+  const vote = await queries.createVote({user: value.userId, poll: poll._id, poll_name: poll.name, ip: req.ip, option: value.option });
   if (!vote) throw boom.internal('Could not create vote');
   await queries.updatePollWithVote(poll._id, vote._id);
   if (value.userId) {
     await queries.updateUserWithVote(value.userId, vote._id);
   }
   res.status(200).json(vote);
-}))
+}));
+
+// DELETE - /api/polls/:pollId - Delete a poll, only if the reqeuster is the creator of the poll;
+router.delete('/:pollId', authMiddleware, asyncMiddleware( async (req, res) => {
+  const { pollId } = req.params;
+  if (!ObjectId.isValid(pollId)) throw boom.badRequest('Poll does not exist');
+  const poll = await queries.findPollById(pollId);
+  if (!poll.creator_id === req.user.id) throw boom.unauthorized('You are not authorized');
+  const deletedPoll = await queries.deletePoll(pollId);
+  if (!deletedPoll) throw boom.badImplementation('Something went wrong, try again');
+  res.status(200).json({success: true});
+}));
 
 
 module.exports = router;

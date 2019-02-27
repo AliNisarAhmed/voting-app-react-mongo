@@ -2,7 +2,6 @@ const boom = require('boom');
 const jwt = require('jsonwebtoken');
 
 function authMiddleWare (req, res, next) {
-  console.log(req.headers);
   const bearerToken = req.headers['authorization'];
   if (!bearerToken) throw boom.unauthorized('you are not authorized');
   const [ , token] = bearerToken.split(' ');

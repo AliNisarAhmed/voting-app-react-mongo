@@ -10,6 +10,10 @@ const VoteSchema = new mongoose.Schema({
     ref: 'Poll',
     required: true,
   },
+  poll_name: {
+    type: String,
+    required: true,
+  },
   ip: {
     type: String,
     required: true,
