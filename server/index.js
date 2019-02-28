@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors')
 
 const app = express();
 require('dotenv').config();
@@ -10,6 +11,7 @@ const authRoutes = require('./routes/auth/index');
 const pollRoutes = require('./routes/api/polls');
 const userRoutes = require('./routes/api/users');
 
+app.use(cors());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
@@ -44,8 +46,12 @@ app.get('/', (req, res) => {
 
 // Catchall route
 
-app.get('*', (req, res) => {
-  res.redirect('/');
+app.get('/*', (req, res) => {
+  res.sendFile(process.cwd() + '/dist/index.html', function(err) {
+    if (err) {
+      res.status(500).send(err)
+    }
+  })
 });
 
 app.use((err, req, res, next) => {
