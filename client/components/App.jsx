@@ -11,6 +11,7 @@ export default class App extends Component {
     data: [],
     err: null,
     isLoading: false,
+    auth: false,
   }
 
   componentDidMount() {
@@ -27,13 +28,18 @@ export default class App extends Component {
       this.setState({err: "Error", isLoading: false});
     }
   }
+
+  handleLogin = (token) => {
+    this.setState({ auth: true });
+    localStorage.setItem('token', token);
+  }
   
   render() {
     return (
       <div>
         <Router>
           <>
-            <Nav />
+            <Nav auth={this.state.auth}/>
             <Switch>
               <Route path="/" exact render={() => (
                 <LandingPage
@@ -42,8 +48,8 @@ export default class App extends Component {
                   data={this.state.data}
                 />
               )} />
-              <Route path="/login" exact render={() => (
-                <LoginPage />
+              <Route path="/login" exact={true} render={(props) => (
+                <LoginPage {...props} handleLogin={this.handleLogin} />
               )} />
             </Switch>
           </>

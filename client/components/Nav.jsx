@@ -2,11 +2,11 @@ import React, { Component } from 'react'
 
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
+import AccountCircle from '@material-ui/icons/AccountCircle';
 import { withStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
+import { IconButton } from '@material-ui/core';
 
 class Nav extends Component {
   render() {
@@ -15,9 +15,9 @@ class Nav extends Component {
       <div className={classes.root}>
         <AppBar position="static">
           <Toolbar>
-            <Typography variant="h6" color="inherit">
-                <Link to="/">LOGO</Link> 
-            </Typography>
+            <Link to="/">
+              LOGO
+            </Link>
             <InputBase 
               placeholder="Search..."
               classes={{
@@ -25,7 +25,22 @@ class Nav extends Component {
                 input: classes.inputInput
               }}  
             />
-            <Button><Link to="/login">Login</Link></Button>
+            {
+              this.props.auth ? (
+              <div>
+                <IconButton 
+                  // aria-owns={open ? 'menu-appbar' : undefined}
+                  aria-haspopup="true"
+                  // onClick={this.handleMenu}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+              </div>
+              ) : (
+                <Link to="/login">Login</Link>
+              )
+            }
           </Toolbar>
         </AppBar>
       </div>
@@ -33,7 +48,7 @@ class Nav extends Component {
   }
 }
 
-const styles = theme => ({
+const styles = {
   root: {
     width: '100%',
   },
@@ -44,6 +59,6 @@ const styles = theme => ({
   inputInput: {
     color: 'red',
   }
-})
+};
 
 export default withStyles(styles)(Nav);

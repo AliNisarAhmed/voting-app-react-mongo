@@ -45,6 +45,8 @@ router.post('/register', asyncMiddleware(async (req, res) => {
 router.post('/login', asyncMiddleware(async (req, res) => {
   const { error, value } = Joi.validate(req.body, loginUserSchema);
 
+  console.log(req.body);
+
   if (error) throw boom.badRequest(error.details[0].message);
 
   const user = await queries.findUserByEmail(value.email);
