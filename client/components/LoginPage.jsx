@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid, TextField, Button } from '@material-ui/core';
+import { Grid, TextField, Button, FormControl, InputLabel, InputAdornment, InputBase } from '@material-ui/core';
 import Axios from 'axios';
 
 export default class LoginPage extends Component {
@@ -44,34 +44,38 @@ export default class LoginPage extends Component {
     return (
       <Grid container alignContent="center" justify="center">
         <form autoComplete="on">
-          <TextField
-            error={this.state.isError}
-            id="email"
-            label="Email" 
-            type="text" 
-            margin="normal"
-            placeholder="Enter your email" 
-            autoFocus={true}
-            onChange={this.handleInput('email')}
-            value={this.state.email}
-            variant="outlined"
-            fullWidth={true}
-            required={true}
-          />
-          <TextField
-            error={this.state.isError}
-            id="password"
-            type="password"
-            label="Password"
-            placeholder="Enter your password"
-            margin="normal"
-            onChange={this.handleInput('password')}
-            value={this.state.password}
-            variant="outlined"
-            fullWidth={true}
-            required={true}
-          />
-          <Button type="submit" color="primary" onClick={this.onFormSubmit}>Submit</Button>
+          <FormControl fullWidth>
+            <TextField
+              error={this.state.isError}
+              id="email"
+              label="Email" 
+              type="text" 
+              margin="normal"
+              placeholder="Enter your email" 
+              autoFocus={true}
+              onChange={this.handleInput('email')}
+              value={this.state.email}
+              variant="outlined"
+              fullWidth={true}
+              required={true}
+            />
+          </FormControl>
+          <FormControl fullWidth>
+            <TextField
+              error={this.state.isError}
+              id="password"
+              type="password"
+              label="Password"
+              placeholder="Enter your password"
+              margin="normal"
+              onChange={this.handleInput('password')}
+              value={this.state.password}
+              variant="outlined"
+              fullWidth={true}
+              required={true}
+            />
+          </FormControl>
+          <Button type="submit" color="primary" variant="contained" fullWidth onClick={this.onFormSubmit}>Sign In</Button>
         </form>  
       </Grid>
     );

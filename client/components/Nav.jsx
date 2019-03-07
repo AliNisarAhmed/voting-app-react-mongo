@@ -6,11 +6,32 @@ import InputBase from '@material-ui/core/InputBase';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import { withStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
-import { IconButton } from '@material-ui/core';
+import { IconButton, Menu, MenuItem } from '@material-ui/core';
+
+import { withRouter } from 'react-router-dom';
 
 class Nav extends Component {
+  state = {
+    anchorEl: null,
+  }
+
+  handleClick = (e) => {
+    this.setState({ anchorEl: e.currentTarget });
+  }
+
+  handleClose = () => {
+    this.setState({ anchorEl: null });
+  }
+
+  handleLogout = () => {
+    this.handleClose();
+    localStorage.removeItem('token');
+    this.props.onLogout();
+  }
+
   render() {
     const { classes } = this.props;
+    const { anchorEl } = this.state;
     return (
       <div className={classes.root}>
         <AppBar position="static">
@@ -29,13 +50,30 @@ class Nav extends Component {
               this.props.auth ? (
               <div>
                 <IconButton 
-                  // aria-owns={open ? 'menu-appbar' : undefined}
+                  aria-owns={open ? 'profile-menu' : undefined}
                   aria-haspopup="true"
-                  // onClick={this.handleMenu}
+                  onClick={this.handleClick}
                   color="inherit"
-                >
+                  >
                   <AccountCircle />
-                </IconButton>
+                  </IconButton>
+                  <Menu
+                  id="profile-menu"
+                  anchorEl={anchorEl}
+                  onClose={this.handleClose}
+                  open={Boolean(anchorEl)}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  >
+                  <MenuItem onClick={this.handleClose}>Profile</MenuItem>
+                  <MenuItem onClick={this.handleLogout}>Log Out</MenuItem>
+                </Menu>
               </div>
               ) : (
                 <Link to="/login">Login</Link>
@@ -61,4 +99,4 @@ const styles = {
   }
 };
 
-export default withStyles(styles)(Nav);
+export default withRouter(withStyles(styles)(Nav));
