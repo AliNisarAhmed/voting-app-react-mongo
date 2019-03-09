@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid, TextField, Button, FormControl, InputLabel, InputAdornment, InputBase } from '@material-ui/core';
+import { Grid, TextField, Button, FormControl } from '@material-ui/core';
 import Axios from 'axios';
 
 export default class LoginPage extends Component {
@@ -49,9 +49,8 @@ export default class LoginPage extends Component {
               error={this.state.isError}
               id="email"
               label="Email" 
-              type="text" 
+              type="email" 
               margin="normal"
-              placeholder="Enter your email" 
               autoFocus={true}
               onChange={this.handleInput('email')}
               value={this.state.email}
@@ -75,7 +74,15 @@ export default class LoginPage extends Component {
               required={true}
             />
           </FormControl>
-          <Button type="submit" color="primary" variant="contained" fullWidth onClick={this.onFormSubmit}>Sign In</Button>
+          <Button 
+            type="submit" 
+            color="primary" 
+            variant="contained" 
+            fullWidth 
+            onClick={this.onFormSubmit}
+          >
+            Sign In
+          </Button>
         </form>  
       </Grid>
     );

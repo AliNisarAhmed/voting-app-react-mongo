@@ -6,6 +6,8 @@ import jwt from 'jsonwebtoken';
 import Nav from './Nav';
 import LandingPage from './LandingPage';
 import LoginPage from './LoginPage';
+import RegisterPage from './RegisterPage';
+import SnackBarComponent from './SnackBarComponent';
 
 export default class App extends Component {
   state = {
@@ -13,6 +15,8 @@ export default class App extends Component {
     err: null,
     isLoading: false,
     auth: false,
+    snackbarOpen: false,
+    snackbarMessage: ""
   }
 
   componentDidMount() {
@@ -21,7 +25,6 @@ export default class App extends Component {
     if (token) {
       const decoded = jwt.decode(token.split(' ')[1]);
       const now = Date.now().valueOf() / 1000;
-      console.log(decoded, now, decoded.exp, 'now < decoded.exp', now < decoded.exp);
       if (decoded.exp > now) {
         this.setState({ auth: true });
       }
@@ -40,12 +43,19 @@ export default class App extends Component {
   }
 
   handleLogin = (token) => {
-    this.setState({ auth: true });
+    this.setState({ auth: true, snackbarOpen: true, snackbarMessage: "Successfully Logged In!" });
     localStorage.setItem('token', token);
   }
 
   onLogout = () => {
-    this.setState({ auth: false });
+    this.setState({ auth: false, snackbarOpen: true, snackbarMessage: "Successfully Logged Out" });
+  }
+
+  handleSnackbarClose = () => {
+    this.setState({
+      snackbarOpen: false,
+      snackbarMessage: "",
+    })
   }
   
   render() {
@@ -54,17 +64,37 @@ export default class App extends Component {
         <Router>
           <>
             <Nav auth={this.state.auth} onLogout={this.onLogout}/>
+            <SnackBarComponent 
+              open={this.state.snackbarOpen} 
+              message={this.state.snackbarMessage}
+              handleClose={this.handleSnackbarClose}
+            />
             <Switch>
-              <Route path="/" exact render={() => (
-                <LandingPage
-                  isLoading={this.state.isLoading}
-                  err={this.state.err}
-                  data={this.state.data}
-                />
-              )} />
-              <Route path="/login" exact={true} render={(props) => (
-                <LoginPage {...props} handleLogin={this.handleLogin} />
-              )} />
+              <Route 
+                path="/" 
+                exact 
+                render={() => (
+                  <LandingPage
+                    isLoading={this.state.isLoading}
+                    err={this.state.err}
+                    data={this.state.data}
+                  />
+                )} 
+              />
+              <Route 
+                path="/login" 
+                exact={true} 
+                render={(props) => (
+                  <LoginPage {...props} handleLogin={this.handleLogin} />
+                )} 
+              />
+              <Route
+                path="/register"
+                exact={true}
+                render={props => (
+                  <RegisterPage {...props} />
+                )}
+              />
             </Switch>
           </>
         </Router>

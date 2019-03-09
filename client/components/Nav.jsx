@@ -76,7 +76,10 @@ class Nav extends Component {
                 </Menu>
               </div>
               ) : (
-                <Link to="/login">Login</Link>
+                <>
+                  <Link to="/login">Login</Link>
+                  <Link to="/register">Register</Link>
+                </>
               )
             }
           </Toolbar>
