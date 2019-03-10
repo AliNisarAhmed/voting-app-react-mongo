@@ -31,7 +31,7 @@ export default class LoginPage extends Component {
         console.log(this.props);
         console.log(response.data);
         this.props.handleLogin(response.data.token);
-        this.props.history.push('/');
+        this.props.history.goBack();
       } else {
         this.setState({ isError: true });
       }
@@ -41,6 +41,8 @@ export default class LoginPage extends Component {
   }
 
   render() {
+    console.log("Login Page Props: ", this.props);
+    console.log(this.props.history);
     return (
       <Grid container alignContent="center" justify="center">
         <form autoComplete="on">

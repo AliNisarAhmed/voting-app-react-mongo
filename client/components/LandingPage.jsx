@@ -16,7 +16,7 @@ export default class LandingPage extends Component {
             data.length === 0 ?
             <h2>No Polls Created yet, be the first</h2> :
             data.map(poll => (
-              <Grid item xs={3}>
+              <Grid item xs={3} key={poll._id}>
                 <Poll
                   name={poll.name} 
                   votes={poll.votes.length} 

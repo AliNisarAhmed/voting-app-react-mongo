@@ -1,15 +1,19 @@
 import React, { Component } from 'react';
 import Axios from 'axios';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import jwt from 'jsonwebtoken';
+import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 
 import Nav from './Nav';
 import LandingPage from './LandingPage';
 import LoginPage from './LoginPage';
 import RegisterPage from './RegisterPage';
 import SnackBarComponent from './SnackBarComponent';
+import { Divider, Button } from '@material-ui/core';
+import NewPoll from './NewPoll';
 
-export default class App extends Component {
+import checkTokenExpiry from './helperFunctions/checkTokenExpiry';
+import PrivateRoute from './PrivateRoute';
+
+class App extends Component {
   state = {
     data: [],
     err: null,
@@ -22,13 +26,13 @@ export default class App extends Component {
   componentDidMount() {
     this.fetchData();
     const token = localStorage.getItem('token');
-    if (token) {
-      const decoded = jwt.decode(token.split(' ')[1]);
-      const now = Date.now().valueOf() / 1000;
-      if (decoded.exp > now) {
-        this.setState({ auth: true });
-      }
+    if (token && checkTokenExpiry(token)) {
+      this.setState({ auth: true });
     }
+  }
+
+  componentDidUpdate() {
+    
   }
 
   fetchData = async () => {
@@ -57,6 +61,22 @@ export default class App extends Component {
       snackbarMessage: "",
     })
   }
+
+  onRegister = () => {
+    this.setState({
+      snackbarOpen: true,
+      snackbarMessage: "Successfully Registered, please Login"
+    });
+  }
+
+  // onNewPollClick = () => {
+  //   if (this.state.auth) {
+  //     console.log(this.props);
+  //     // this.props.history.push('/new');
+  //   } else {
+  //     this.props.history.push('/login');
+  //   }
+  // }
   
   render() {
     return (
@@ -64,15 +84,26 @@ export default class App extends Component {
         <Router>
           <>
             <Nav auth={this.state.auth} onLogout={this.onLogout}/>
+            <Button 
+              variant="contained" 
+              color="primary"
+              size="large"
+              to="/login"
+              component={Link}
+            >
+              New Poll
+            </Button>
             <SnackBarComponent 
               open={this.state.snackbarOpen} 
               message={this.state.snackbarMessage}
               handleClose={this.handleSnackbarClose}
             />
+            <Divider light/>
             <Switch>
               <Route 
                 path="/" 
-                exact 
+                exact
+                push 
                 render={() => (
                   <LandingPage
                     isLoading={this.state.isLoading}
@@ -83,7 +114,8 @@ export default class App extends Component {
               />
               <Route 
                 path="/login" 
-                exact={true} 
+                exact={true}
+                push 
                 render={(props) => (
                   <LoginPage {...props} handleLogin={this.handleLogin} />
                 )} 
@@ -92,9 +124,10 @@ export default class App extends Component {
                 path="/register"
                 exact={true}
                 render={props => (
-                  <RegisterPage {...props} />
+                  <RegisterPage {...props} onRegister={this.onRegister}/>
                 )}
               />
+              <PrivateRoute path='/new' component={NewPoll} auth={this.state.auth}/>
             </Switch>
           </>
         </Router>
@@ -102,3 +135,5 @@ export default class App extends Component {
     )
   }
 }
+
+export default App;

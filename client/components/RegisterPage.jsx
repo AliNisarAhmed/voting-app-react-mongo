@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Grid, FormControl, TextField, Button } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
+import Axios from 'axios';
 
 class RegisterPage extends Component {
   state = {
@@ -34,7 +35,7 @@ class RegisterPage extends Component {
       });
       if (response.status === 200) {
         this.setState({ isError: false, username: "", email: "", password: "", password2: "" });
-        // modify something in the app component here to notify user of successful registration, to be implemented later
+        this.props.onRegister();
         this.props.history.push('/login');
       } else {
         this.setState({ isError: true });

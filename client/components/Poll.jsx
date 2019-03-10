@@ -8,7 +8,7 @@ class Poll extends Component {
   render() {
     const { name, votes, creator, createdOn, classes } = this.props;
     return (
-      <Card className={classes.root}>
+      <Card className={classes.root} raised>
         <CardHeader>
           <Typography>
             {name}
